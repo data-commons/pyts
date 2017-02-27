@@ -10,3 +10,4 @@ class AutoRegression(object):
 		length = len(self.data_set)
 		predictions = self.model_fit.predict(start=length,end=length+n_ahead-1,dynamic=True)
 		return predictions
+

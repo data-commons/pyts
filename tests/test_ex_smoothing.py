@@ -16,3 +16,8 @@ class ExponentialSmoothingTest(TestCase):
         exponential_smoothing = ExponentialSmoothing(series, alpha=0.9)
         expected = [23.86, 23.86]
         self.npt.assert_allclose(exponential_smoothing.predict(2), expected, atol=0.01)
+
+    def test_should_calculate_aic_values_of_the_model(self):
+        series = pd.Series(data=[13, 17, 19, 23, 24])
+        exponential_smoothing = ExponentialSmoothing(series, alpha=0.9)
+        self.npt.assert_allclose(exponential_smoothing.aic(), -8.41, atol=0.1)

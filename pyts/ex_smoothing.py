@@ -1,5 +1,10 @@
+# coding=utf-8
+import math
+
+
 class ExponentialSmoothing(object):
     """docstring for ExponentialSmoothing"""
+    """    st=αxt+(1−α)st−1 """
 
     def __init__(self, time_series, alpha=0.0):
         self.time_series = time_series
@@ -24,3 +29,12 @@ class ExponentialSmoothing(object):
                 m = x * self.alpha + self.alpha_inv * smoothing_series[-1]
                 smoothing_series.append(m)
         return smoothing_series
+
+    def aic(self):
+        prediction = self.__compute__series(self.time_series)
+        n = len(self.time_series)
+        k = 2
+        residuals = self.time_series - prediction
+        rss = sum(residuals * residuals)
+        likelihood = rss / n
+        return n * math.log(likelihood) + 2 * k

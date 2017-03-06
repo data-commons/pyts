@@ -1,3 +1,4 @@
+from data import long_series
 from pyts.ex_smoothing import ExponentialSmoothing
 import numpy as np
 import pandas as pd
@@ -21,3 +22,15 @@ class ExponentialSmoothingTest(TestCase):
         series = pd.Series(data=[13, 17, 19, 23, 24])
         exponential_smoothing = ExponentialSmoothing(series, alpha=0.9)
         self.npt.assert_allclose(exponential_smoothing.aic(), -0.02, atol=0.1)
+
+    def test_should_choose_the_alpha_value_automatically_based_on_the_aic_values(self):
+        series = pd.Series(data=[13, 17, 19, 23, 24])
+        exponential_smoothing = ExponentialSmoothing(series)
+        exponential_smoothing.fit()
+        self.npt.assert_allclose(exponential_smoothing.aic(), -115.56, atol=0.1)
+
+    def test_should_choose_the_alpha_value_automatically_on_large_data(self):
+        series = pd.Series(long_series())
+        exponential_smoothing = ExponentialSmoothing(series)
+        exponential_smoothing.fit()
+        self.npt.assert_allclose(exponential_smoothing.aic(), -8506.96, atol=0.1)

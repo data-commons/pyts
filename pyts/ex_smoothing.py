@@ -12,29 +12,29 @@ class ExponentialSmoothing(object):
         self.alpha_inv = 1 - self.alpha
 
     def predict(self, n=1):
-        smoothing_series = self.__compute__series(self.time_series)
+        fitted = self.__compute__fit(self.time_series)
         if n is 1:
-            return smoothing_series[-n:]
+            return fitted[-n:]
         for ahead in xrange(n):
-            x = smoothing_series[-1]
-            m = x * self.alpha + self.alpha_inv * smoothing_series[-1]
-            smoothing_series.append(m)
-        return smoothing_series[-n:]
+            x = fitted[-1]
+            m = x * self.alpha + self.alpha_inv * fitted[-1]
+            fitted.append(m)
+        return fitted[-n:]
 
-    def __compute__series(self, time_series, smoothing_series=None):
+    def __compute__fit(self, time_series, fitted=None):
         for _, x in enumerate(time_series):
-            if smoothing_series is None:
-                smoothing_series = [x]
+            if fitted is None:
+                fitted = [x * self.alpha]
             else:
-                m = x * self.alpha + self.alpha_inv * smoothing_series[-1]
-                smoothing_series.append(m)
-        return smoothing_series
+                m = x * self.alpha + self.alpha_inv * fitted[-1]
+                fitted.append(m)
+        return fitted
 
     def aic(self):
-        prediction = self.__compute__series(self.time_series)
+        fitted = self.__compute__fit(self.time_series)
         n = len(self.time_series)
         k = 2
-        residuals = self.time_series - prediction
+        residuals = self.time_series - fitted
         rss = sum(residuals * residuals)
         likelihood = rss / n
         return n * math.log(likelihood) + 2 * k

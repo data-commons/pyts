@@ -33,14 +33,14 @@ class ExponentialSmoothing(object):
     def fit(self):
         max_aic = np.inf
         alpha = 0.0
-        for x in np.linspace(0.1, 0.999999):
+        for x in np.linspace(0.1, 0.98765):
             self.alpha = x
-            self.__compute__fit(self.time_series)
             aic = self.aic()
             if aic < max_aic:
                 max_aic = aic
                 alpha = x
         self.alpha = alpha
+        print alpha
 
     def alpha_inv(self):
         return 1 - self.alpha
@@ -48,7 +48,7 @@ class ExponentialSmoothing(object):
     def aic(self):
         fitted = self.__compute__fit(self.time_series)
         n = len(self.time_series)
-        k = 2
+        k = 3
         residuals = self.time_series - fitted
         rss = sum(residuals * residuals)
         likelihood = rss / n
